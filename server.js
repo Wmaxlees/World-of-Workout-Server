@@ -4,15 +4,26 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var oauthserver = require('node-oauth2-server');
 
 // Configure body parser
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Setup oauth
+/*
+app.oauth = oauthserver({
+    model: {},
+    grants: ['password', 'refresh_token'],
+    debug: true
+});
+*/
+
 // MongoDB connection stuff
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/world_of_exercise');
 var User = require('./app/models/user');
+var AuthPair = require('./app/models/auth_pair');
 
 // Set the port
 var port = process.env.PORT || 55421;
@@ -25,21 +36,19 @@ router.use(function (req, res, next) {
     // Log the request
     console.log('Recieved request');
 
-    // TODO: ADD IN CODE TO ENSURE REQUESTS ARE LEGIT
-
     // Pass it on
     next();
 });
 
-router.get('/', function (req, res) {
-    res.json({ message: 'It\'s working' });
-});
+// OAuth middleware
+// app.all('/oauth/token', app.oauth.grant());
+
 
 // USER ROUTES
 // ------------------------------------------
 router.route('/users')
 
-    .post(function (req, res) {
+    .post(/*app.oauth.authorise(),*/ function (req, res) {
         var user = new User();
         user.username = req.body.username;
         user.password = req.body.password;
@@ -63,7 +72,7 @@ router.route('/users')
         });
     })
 
-    .get(function(req, res) {
+    .get(/*app.oauth.authorise(),*/ function (req, res) {
         User.find(function(err, users) {
             if (err)
                 res.send(err);
@@ -72,9 +81,13 @@ router.route('/users')
         });
     });
 
+// ------------------------------------------
+
+// SPECIFIC USER ROUTES
+// ------------------------------------------
 router.route('/users/:user_id')
 
-    .get(function (req, res) {
+    .get(/*app.oauth.authorise(),*/ function (req, res) {
         User.findById(req.params.user_id, function (err, user) {
             if (err)
                 res.send(err);
@@ -83,7 +96,7 @@ router.route('/users/:user_id')
         });
     })
 
-    .put(function (req, res) {
+    .put(/*app.oauth.authorise(),*/ function (req, res) {
         User.findById(req.params.user_id, function (err, user) {
             if (err)
                 res.send(err);
@@ -104,7 +117,7 @@ router.route('/users/:user_id')
         })
     })
 
-    .delete(function (req, res) {
+    .delete(/*app.oauth.authorise(),*/ function (req, res) {
         User.remove({
             _id: req.params.user_id
         }, function(err, user) {
@@ -116,8 +129,19 @@ router.route('/users/:user_id')
     });
 // ------------------------------------------
 
+// ROUTINE ROUTES
+// ------------------------------------------
+router.route('/routines')
+
+    .post(/*app.oauth.authorise(),*/ function (req, res) {
+        var routine = new Routine();
+        
+    })
+// ------------------------------------------
+
 // Register the routes
 app.use('/api', router);
+app.use(app.oauth.errorHandler());
 
 // Start the server
 app.listen(port);
