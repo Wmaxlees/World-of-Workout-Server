@@ -23,6 +23,8 @@ app.oauth = oauthserver({
 var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost/world_of_exercise');
 var User = require('./app/models/user');
+var Routine = require('./app/models/routine');
+var Exercise = require('./app/models/exercise');
 var AuthPair = require('./app/models/auth_pair');
 
 // Set the port
@@ -135,13 +137,103 @@ router.route('/routines')
 
     .post(/*app.oauth.authorise(),*/ function (req, res) {
         var routine = new Routine();
-        
+        routine.exercises = new Array();
+
+        var arr = req.body.exercises;
+        console.log(req.body.exercises);
+        for (i = 0; i < arr.length; ++i) {
+            var temp = new Exercise();
+            temp.name = arr[i].name;
+            temp.amount = arr[i].amount;
+            temp.timed = arr[i].timed;
+            temp.ordinal = arr[i].ordinal;
+            temp.primary = arr[i].primary;
+            temp.secondary_one = arr[i].secondary_one;
+            temp.secondary_two = arr[i].secondary_two;
+
+            console.log(temp);
+            routine.exercises.push(temp);
+        }
+
+        routine.save(function (err) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'Routine created' });
+        });
     })
+
+    .get(/*app.oauth.authorise(),*/ function (req, res) {
+        Routine.find(function (err, routines) {
+            if (err)
+                res.send(err);
+
+            res.json(routines);
+        });
+    });
 // ------------------------------------------
+
+
+router.route('/routines/:routine_id')
+
+    .get(/*app.oauth.authorise(),*/ function (req, res) {
+        Routine.findById(req.params.routine_id, function (err, routine) {
+            if (err)
+                res.send(err);
+
+            res.json(routine);
+        });
+    })
+
+    .put(/*app.oauth.authorise(),*/ function (req, res) {
+        Routine.findById(req.params.routine_id, function (err, routine) {
+            if (err)
+                res.send(err);
+
+            routine.exercises = new Array();
+
+            var arr = req.body.exercises;
+            console.log(req.body.exercises);
+            for (i = 0; i < arr.length; ++i) {
+                var temp = new Exercise();
+                temp.name = arr[i].name;
+                temp.amount = arr[i].amount;
+                temp.timed = arr[i].timed;
+                temp.ordinal = arr[i].ordinal;
+                temp.primary = arr[i].primary;
+                temp.secondary_one = arr[i].secondary_one;
+                temp.secondary_two = arr[i].secondary_two;
+
+                console.log(temp);
+                routine.exercises.push(temp);
+            }
+
+            console.log(routine.exercises);
+
+            routine.save(function (err) {
+                if (err)
+                    res.send(err);
+
+                res.json({ message: 'Routine updated' });
+            });
+
+        })
+    })
+
+    .delete(/*app.oauth.authorise(),*/ function (req, res) {
+        Routine.remove({
+            _id: req.params.routine_id
+        }, function (err, routine) {
+            if (err)
+                res.send(err);
+
+            res.json({ message: 'Successfully deleted' });
+        });
+    });
 
 // Register the routes
 app.use('/api', router);
-app.use(app.oauth.errorHandler());
+// app.use(app.oauth.errorHandler());
 
 // Start the server
 app.listen(port);
