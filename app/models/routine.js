@@ -4,7 +4,8 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var RoutineSchema = new Schema({
-   exercises: []
+    _id: String,
+    exercises: []
 });
 
 module.exports = mongoose.model('Routine', RoutineSchema);

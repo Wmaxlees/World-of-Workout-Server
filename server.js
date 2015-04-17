@@ -52,7 +52,7 @@ router.route('/users')
 
     .post(/*app.oauth.authorise(),*/ function (req, res) {
         var user = new User();
-        user.username = req.body.username;
+        user._id = req.body._id;
         user.password = req.body.password;
         user.name = req.body.name;
         user.level = 1;
@@ -138,6 +138,8 @@ router.route('/routines')
     .post(/*app.oauth.authorise(),*/ function (req, res) {
         var routine = new Routine();
         routine.exercises = new Array();
+
+        routine._id = req.body.name;
 
         var arr = req.body.exercises;
         console.log(req.body.exercises);
