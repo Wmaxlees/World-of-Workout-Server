@@ -60,9 +60,36 @@ router.route('/users')
         user.title = "";
         user.achievement_points = 0;
         user.achievements = [];
-        stats = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        stat_experience = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        friends = [];
+
+        user.abdominal = 0;
+        user.bicep = 0;
+        user.deltoids = 0;
+        user.erector_spinae = 0;
+        user.gastro_soleus = 0;
+        user.gluteus = 0;
+        user.hamstrings = 0;
+        user.lat_dor_rhom = 0;
+        user.obliques = 0;
+        user.pectoralis = 0;
+        user.quadriceps = 0;
+        user.trapezius = 0;
+        user.triceps = 0;
+
+        user.exp_abdominal = 0;
+        user.exp_bicep = 0;
+        user.exp_deltoids = 0;
+        user.exp_erector_spinae = 0;
+        user.exp_gastro_soleus = 0;
+        user.exp_gluteus = 0;
+        user.exp_hamstrings = 0;
+        user.exp_lat_dor_rhom = 0;
+        user.exp_obliques = 0;
+        user.exp_pectoralis = 0;
+        user.exp_quadriceps = 0;
+        user.exp_trapezius = 0;
+        user.exp_triceps = 0;
+
+        user.friends = [];
 
 
 
@@ -109,6 +136,34 @@ router.route('/users/:user_id')
             user.experience = req.body.experience;
             user.title = req.body.title;
             user.achievement_points = req.body.achievement_points;
+
+            user.abdominal = req.body.abdominal;
+            user.bicep = req.body.bicep;
+            user.deltoids = req.body.deltoids;
+            user.erector_spinae = req.body.erector_spinae;
+            user.gastro_soleus = req.body.gastro_soleus;
+            user.gluteus = req.body.gluteus;
+            user.hamstrings = req.body.hamstrings;
+            user.lat_dor_rhom = req.body.lat_dor_rhom;
+            user.obliques = req.body.obliques;
+            user.pectoralis = req.body.pectoralis;
+            user.quadriceps = req.body.quadriceps;
+            user.trapezius = req.body.trapezius;
+            user.triceps = req.body.triceps;
+
+            user.exp_abdominal = req.body.exp_abdominal;
+            user.exp_bicep = req.body.exp_bicep;
+            user.exp_deltoids = req.body.exp_deltoids;
+            user.exp_erector_spinae = req.body.exp_erector_spinae;
+            user.exp_gastro_soleus = req.body.exp_gastro_soleus;
+            user.exp_gluteus = req.body.exp_gluteus;
+            user.exp_hamstrings = req.body.exp_hamstrings;
+            user.exp_lat_dor_rhom = req.body.exp_lat_dor_rhom;
+            user.exp_obliques = req.body.exp_obliques;
+            user.exp_pectoralis = req.body.exp_pectoralis;
+            user.exp_quadriceps = req.body.exp_quadriceps;
+            user.exp_trapezius = req.body.exp_trapezius;
+            user.exp_triceps = req.body.exp_triceps;
 
             user.save(function (err) {
                 if (err)
